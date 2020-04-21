@@ -23,7 +23,7 @@ const notes = JSON.parse(
   })
   );
   
-const notesUpdate = notes => {
+const updateNote = notes => {
   fs.writeFileSync(
     path.join(__dirname, "/db/db.json"),
     JSON.stringify(notes),
@@ -54,6 +54,20 @@ app.get("/assets/js/index.js", function(req, res) {
 app.get("/api/notes", function(req, res) {
   return res.json(notes);
   });  
+
+// process for posting notes
+
+app.post("/api/notes", function(req, res) {
+  let addNote = req.body;
+  let id = notes.length;
+
+  addNote.id = id +1;
+  notes.push(addNote);
+  updateNote(notes);
+  return res.json(notes);
+});
+
+
 
 
 
