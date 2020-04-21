@@ -57,7 +57,8 @@ app.get("/api/notes", function(req, res) {
 
 // process for posting notes
 
-app.post("/api/notes", function(req, res) {
+app.post("/api/notes", (req, res) => {
+  
   let addNote = req.body;
   let id = notes.length;
 
@@ -67,6 +68,17 @@ app.post("/api/notes", function(req, res) {
   return res.json(notes);
 });
 
+// process for deleting notes
+
+app.delete("/api/notes/:id", (req, res) => {
+
+  let id = req.params.id;
+
+  delete notes[id - 1];
+  updateNote(notes);
+  res.send(notes);
+
+})
 
 
 
