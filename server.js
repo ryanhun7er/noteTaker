@@ -62,39 +62,26 @@ app.post("/api/notes", (req, res) => {
   let addNote = req.body;
   let id = notes.length;
 
-  addNote.id = id +1;
+  console.log(addNote);
+
+  addNote.id = id + 1;
   notes.push(addNote);
   updateNote(notes);
   return res.json(notes);
-
+  
 });
 
 // process for deleting notes
 
 app.delete("/api/notes/:id", (req, res) => {
 
-  let noteid = JSON.parse(req.params.id);
-  let noteId2 = (req.originalUrl.replace(/\?.*$/, "")).split(":")[1];
-
-  for (let i=0; i < noteid.length; i++) {
-    if (noteid[i].id === noteId2) {
-      notes = []
-      noteid.splice(i, 1);
-      for (i=0; i < noteid.length; i++) {
-        notes.push(noteid[i]);
-        console.log(noteid);
-      }
-    }
-  }
-  fs.writeFileSync("db.json", JSON.stringify(notes));
-  return res.json(notes);
-
-
+  let id = req.params.id;
+  delete notes[id];
+  updateNote(notes);
+  res.send(notes);
 
 
 });
-
-
 
 
 
