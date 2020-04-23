@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
+const db_dir = path.resolve(__dirname, "db");
+const notesArray = path.join(db_dir, "db.json");
 let db = require("./db/db.json");
 // Tells node that we are creating an "express" server
 
@@ -15,6 +17,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public')); 
 
 //const for reading and writing file sync
 
@@ -43,14 +46,6 @@ app.get("/notes", function(req, res) {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
   });
 
-app.get("/assets/css/styles.css", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/assets/css/styles.css"));
-  });
-  
-app.get("/assets/js/index.js", function(req, res) {
-  res.sendFile(path.join(__dirname, "/public/assets/js/index.js"));
-  });
-
 app.get("/api/notes", function(req, res) {
   return res.json(notes);
   });  
@@ -75,20 +70,19 @@ app.post("/api/notes", (req, res) => {
 
 app.delete("/api/notes/:id", (req, res) => {
 
-  let noteid = req.params.id;
-  // let noteArray = notes.length;
-
+  let noteID = req.params.id;
+ 
   for(let i = 0; i < notes.length; i++) {
-    if (notes[i].id === noteid) {
+    if (noteID === notes[i].id) {
       notes.splice(i,1);
+      fs.writeFileSync(notesArray, JSON.stringify(notes), (err) => {
+        if (err) throw err;
+      });
+      return res.json(notes);
          
     }
-  }
-
-  updateNote(notes);
-  res.send(notes);
+  } 
   
-  // res.send(DELETE, notes[id])
 
 });
 
