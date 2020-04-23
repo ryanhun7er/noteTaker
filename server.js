@@ -75,12 +75,19 @@ app.post("/api/notes", (req, res) => {
 
 app.delete("/api/notes/:id", (req, res) => {
 
-  let id = req.params.id;
-  console.log(id);
+  let noteid = req.params.id;
+  // let noteArray = notes.length;
 
-  delete notes[id];
+  for(let i = 0; i < notes.length; i++) {
+    if (notes[i].id === noteid) {
+      notes.splice(i,1);
+         
+    }
+  }
+
   updateNote(notes);
-  res.send(req.body);
+  res.send(notes);
+  
   // res.send(DELETE, notes[id])
 
 });
