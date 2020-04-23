@@ -75,12 +75,13 @@ app.post("/api/notes", (req, res) => {
 
 app.delete("/api/notes/:id", (req, res) => {
 
-  let id = req.param("id");
+  let id = req.params.id;
   console.log(id);
-  
+
   delete notes[id];
   updateNote(notes);
-  res.send(id);
+  res.send(req.body);
+  // res.send(DELETE, notes[id])
 
 });
 
