@@ -32,8 +32,6 @@
 
 ![gif](assets/notetaker.gif)
 
-## Testing
-* n/a
 
 ## Contact
 
