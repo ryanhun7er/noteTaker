@@ -1,11 +1,14 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
+const uuid = require("uuid/v4");
 
-const db_dir = path.resolve(__dirname, "db");
-const notesArray = path.join(db_dir, "db.json");
+
 let db = require("./db/db.json");
 // Tells node that we are creating an "express" server
+
+const writeFileAsync = util.promisify(fs.writeFile);
 
 const app = express();
 
@@ -21,7 +24,7 @@ app.use(express.static('public'));
 
 //const for reading and writing file sync
 
-const notes = JSON.parse(
+let notes = JSON.parse(
   fs.readFileSync(path.join(__dirname, "/db/db.json"), (err) => {
       if (err) throw err;
   })
@@ -55,11 +58,11 @@ app.get("/api/notes", function(req, res) {
 app.post("/api/notes", (req, res) => {
   
   let addNote = req.body;
-  let id = notes.length;
+  let id = uuid();
 
   console.log(addNote);
 
-  addNote.id = id + 1;
+  addNote.id = `${id}`;
   notes.push(addNote);
   updateNote(notes);
   return res.json(notes);
@@ -70,21 +73,17 @@ app.post("/api/notes", (req, res) => {
 
 app.delete("/api/notes/:id", (req, res) => {
 
-  let noteID = req.params.id;
- 
-  for(let i = 0; i < notes.length; i++) {
-    if (noteID === notes[i].id) {
-      notes.splice(i,1);
-      fs.writeFileSync(notesArray, JSON.stringify(notes), (err) => {
-        if (err) throw err;
-      });
-      return res.json(notes);
-         
-    }
-  } 
-  
+  let keptNotes = notes.filter(note => note.id !== req.params.id);
 
-});
+  notes = keptNotes;
+
+  writeFileAsync("./db/db.json", JSON.stringify(notes))
+  .then(() => {
+    res.json(notes);
+  }).catch((err) => console.log(err))
+  });
+
+
 
 
 
@@ -92,3 +91,5 @@ app.delete("/api/notes/:id", (req, res) => {
 app.listen(PORT, function() {
     console.log("App listening on PORT: " + PORT);
   });
+
+  
