@@ -3,12 +3,10 @@ const path = require("path");
 const fs = require("fs");
 const util = require("util");
 const uuid = require("uuid/v4");
+const writeFileAsync = util.promisify(fs.writeFile);
 
-
-let db = require("./db/db.json");
 // Tells node that we are creating an "express" server
 
-const writeFileAsync = util.promisify(fs.writeFile);
 
 const app = express();
 
@@ -60,8 +58,6 @@ app.post("/api/notes", (req, res) => {
   let addNote = req.body;
   let id = uuid();
 
-  console.log(addNote);
-
   addNote.id = `${id}`;
   notes.push(addNote);
   updateNote(notes);
@@ -82,9 +78,6 @@ app.delete("/api/notes/:id", (req, res) => {
     res.json(notes);
   }).catch((err) => console.log(err))
   });
-
-
-
 
 
 // Sets up listener port
