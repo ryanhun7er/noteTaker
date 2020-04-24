@@ -28,6 +28,10 @@
 ## Contributors
 * ryanhun7er
 
+## Example
+
+![gif](assets/notetaker.gif)
+
 ## Testing
 * n/a
 
